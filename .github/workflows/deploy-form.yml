@@ -1,11 +1,14 @@
 name: Deploy LIFF Form
 
 on:
+  push:
+    branches:
+      - main
   repository_dispatch:
     types: [deploy-form]
 
 env:
-  STORE_ID: ${{ github.event.client_payload.store_id }}
+  STORE_ID: ${{ github.event.client_payload.store_id || 'demo-store' }}
   RECORD_ID: ${{ github.event.client_payload.record_id }}
 
 jobs:
@@ -20,39 +23,21 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        cache: 'npm'
         
     - name: Install dependencies
-      run: |
-        npm install -g handlebars-cli
+      run: npm ci
         
     - name: Generate form files
-      run: |
-        # ディレクトリ作成
-        mkdir -p dist/${STORE_ID}
-        
-        # テンプレートデータ作成
-        echo '${{ toJson(github.event.client_payload) }}' > data.json
-        
-        # HTML生成
-        handlebars templates/index.hbs \
-          --data data.json \
-          --output dist/${STORE_ID}/index.html
-          
-        # CSS・JS複製
-        cp templates/style.css dist/${STORE_ID}/
-        cp templates/script.js dist/${STORE_ID}/
-        
-        # 設定値をJSに埋め込み
-        sed -i "s/{{LIFF_ID}}/${{ github.event.client_payload.liff_id }}/g" dist/${STORE_ID}/script.js
-        sed -i "s/{{STORE_ID}}/${STORE_ID}/g" dist/${STORE_ID}/script.js
+      run: npm run build
         
     - name: Deploy to Cloudflare Pages
       uses: cloudflare/pages-action@v1
       with:
         apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        projectName: ${STORE_ID}-booking
-        directory: dist/${STORE_ID}
+        projectName: line-forms
+        directory: dist
         gitHubToken: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Update kintone record (Success)
