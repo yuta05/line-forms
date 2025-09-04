@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{store_name}} - 予約フォーム</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary-color: {{primary_color}};
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>{{store_name}}<br>予約フォーム</h1>
+            {{#if phone}}
+            <p class="store-info">📞 {{phone}}</p>
+            {{/if}}
+        </header>
+        
+        <main>
+            <!-- 来店回数選択 -->
+            <section class="visit-section">
+                <h2>来店回数</h2>
+                <div class="button-group">
+                    <button type="button" class="visit-btn" data-time="30">初めて</button>
+                    <button type="button" class="visit-btn" data-time="15">2回目以降</button>
+                </div>
+            </section>
+            
+            <!-- メニュー選択 -->
+            <section class="menu-section">
+                <h2>メニュー選択</h2>
+                <div class="menu-list">
+                    {{#each menu}}
+                    <button type="button" class="menu-btn" 
+                            data-id="{{id}}" 
+                            data-time="{{time}}" 
+                            data-price="{{price}}">
+                        <span class="menu-name">{{name}}</span>
+                        <span class="menu-details">{{time}}分 - ¥{{price}}</span>
+                    </button>
+                    {{/each}}
+                </div>
+            </section>
+            
+            <!-- カレンダー -->
+            <section class="calendar-section">
+                <h2>日時選択</h2>
+                <div class="date-picker">
+                    <div class="month-nav">
+                        <button type="button" id="prevMonth">&lt;</button>
+                        <span id="currentMonth"></span>
+                        <button type="button" id="nextMonth">&gt;</button>
+                    </div>
+                    <div id="calendar"></div>
+                </div>
+                <div class="time-picker" id="timePicker" style="display: none;">
+                    <h3>時間を選択</h3>
+                    <div id="timeSlots"></div>
+                </div>
+            </section>
+            
+            <!-- 顧客情報 -->
+            <section class="customer-section">
+                <h2>お客様情報</h2>
+                <form id="customerForm">
+                    <div class="form-group">
+                        <label for="customerName">お名前 <span class="required">*</span></label>
+                        <input type="text" id="customerName" placeholder="お名前" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerPhone">電話番号 <span class="required">*</span></label>
+                        <input type="tel" id="customerPhone" placeholder="090-1234-5678" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerMessage">ご要望・ご質問</label>
+                        <textarea id="customerMessage" placeholder="何かご要望がございましたらお聞かせください"></textarea>
+                    </div>
+                </form>
+            </section>
+            
+            <!-- 予約内容確認 -->
+            <section class="summary-section" id="summarySection" style="display: none;">
+                <h2>予約内容確認</h2>
+                <div class="summary-content">
+                    <div class="summary-item">
+                        <span class="label">来店:</span>
+                        <span id="summaryVisit"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">メニュー:</span>
+                        <span id="summaryMenu"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">日時:</span>
+                        <span id="summaryDateTime"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">お名前:</span>
+                        <span id="summaryName"></span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">電話番号:</span>
+                        <span id="summaryPhone"></span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 送信ボタン -->
+            <section class="submit-section">
+                <button id="submitBtn" class="submit-btn" disabled>
+                    予約を行う
+                </button>
+                <p class="note">※当日キャンセルは無いようにお願いします</p>
+            </section>
+        </main>
+    </div>
+    
+    <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

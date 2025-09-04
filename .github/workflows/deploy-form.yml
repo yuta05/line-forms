@@ -1,0 +1,91 @@
+name: Deploy LIFF Form
+
+on:
+  repository_dispatch:
+    types: [deploy-form]
+
+env:
+  STORE_ID: ${{ github.event.client_payload.store_id }}
+  RECORD_ID: ${{ github.event.client_payload.record_id }}
+
+jobs:
+  generate-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: |
+        npm install -g handlebars-cli
+        
+    - name: Generate form files
+      run: |
+        # ディレクトリ作成
+        mkdir -p dist/${STORE_ID}
+        
+        # テンプレートデータ作成
+        echo '${{ toJson(github.event.client_payload) }}' > data.json
+        
+        # HTML生成
+        handlebars templates/index.hbs \
+          --data data.json \
+          --output dist/${STORE_ID}/index.html
+          
+        # CSS・JS複製
+        cp templates/style.css dist/${STORE_ID}/
+        cp templates/script.js dist/${STORE_ID}/
+        
+        # 設定値をJSに埋め込み
+        sed -i "s/{{LIFF_ID}}/${{ github.event.client_payload.liff_id }}/g" dist/${STORE_ID}/script.js
+        sed -i "s/{{STORE_ID}}/${STORE_ID}/g" dist/${STORE_ID}/script.js
+        
+    - name: Deploy to Cloudflare Pages
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        projectName: ${STORE_ID}-booking
+        directory: dist/${STORE_ID}
+        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Update kintone record (Success)
+      if: success()
+      run: |
+        FORM_URL="https://${STORE_ID}-booking.pages.dev"
+        
+        curl -X PUT "https://${{ secrets.KINTONE_DOMAIN }}/k/v1/record.json" \
+          -H "X-Cybozu-API-Token: ${{ secrets.KINTONE_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"app\": \"${{ secrets.KINTONE_APP_ID }}\",
+            \"id\": \"${RECORD_ID}\",
+            \"record\": {
+              \"form_url\": {\"value\": \"${FORM_URL}\"},
+              \"status\": {\"value\": \"active\"},
+              \"updated_at\": {\"value\": \"$(date -Iseconds)\"},
+              \"error_message\": {\"value\": \"\"}
+            }
+          }"
+          
+    - name: Update kintone record (Failure)
+      if: failure()
+      run: |
+        curl -X PUT "https://${{ secrets.KINTONE_DOMAIN }}/k/v1/record.json" \
+          -H "X-Cybozu-API-Token: ${{ secrets.KINTONE_API_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"app\": \"${{ secrets.KINTONE_APP_ID }}\",
+            \"id\": \"${RECORD_ID}\",
+            \"record\": {
+              \"status\": {\"value\": \"error\"},
+              \"error_message\": {\"value\": \"フォーム生成またはデプロイに失敗しました\"},
+              \"updated_at\": {\"value\": \"$(date -Iseconds)\"}
+            }
+          }"
