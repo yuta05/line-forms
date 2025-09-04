@@ -38,7 +38,7 @@ jobs:
         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         projectName: line-forms
         directory: dist
-        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        gitHubToken: ${{ secrets.GH_TOKEN }}
         
     - name: Update kintone record (Success)
       if: success()
