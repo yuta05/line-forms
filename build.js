@@ -6,6 +6,10 @@ async function build() {
   try {
     console.log('🔨 ビルドを開始します...');
     
+    // 環境変数または引数から店舗データを取得
+    const storeData = getStoreData();
+    console.log('📋 店舗データ:', storeData);
+    
     // distディレクトリをクリーンアップ
     await fs.emptyDir('./dist');
     console.log('✅ distディレクトリをクリーンアップしました');
@@ -15,34 +19,11 @@ async function build() {
     const templateContent = await fs.readFile(templatePath, 'utf8');
     const template = Handlebars.compile(templateContent);
     
-    // デフォルトの店舗データ（デモ用）
-    const defaultStoreData = {
-      store_id: 'demo-store',
-      store_name: 'デモ店舗',
-      phone: '03-1234-5678',
-      liff_id: 'demo-liff-id',
-      menu: [
-        { id: 'cut', name: 'カット', time: 60, price: 5000 },
-        { id: 'color', name: 'カラー', time: 120, price: 8000 },
-        { id: 'perm', name: 'パーマ', time: 150, price: 12000 }
-      ],
-      business_hours: {
-        '月': '9:00-18:00',
-        '火': '9:00-18:00',
-        '水': '休み',
-        '木': '9:00-18:00',
-        '金': '9:00-18:00',
-        '土': '9:00-17:00',
-        '日': '10:00-16:00'
-      },
-      primary_color: '#ff6b6b'
-    };
-    
     // HTMLを生成
-    const html = template(defaultStoreData);
+    const html = template(storeData);
     
     // 出力ディレクトリを作成
-    const outputDir = `./dist/${defaultStoreData.store_id}`;
+    const outputDir = `./dist/${storeData.store_id}`;
     await fs.ensureDir(outputDir);
     
     // HTMLファイルを出力
@@ -80,8 +61,8 @@ async function build() {
   <div class="container">
     <h1>Line Forms 予約システム</h1>
     <p>利用可能な店舗:</p>
-    <a href="/${defaultStoreData.store_id}/" class="store-link">
-      ${defaultStoreData.store_name}
+    <a href="/${storeData.store_id}/" class="store-link">
+      ${storeData.store_name}
     </a>
   </div>
 </body>
@@ -96,6 +77,40 @@ async function build() {
     console.error('❌ ビルドエラー:', error);
     process.exit(1);
   }
+}
+
+function getStoreData() {
+  // GitHub Actions の environment variables から取得
+  if (process.env.GITHUB_ACTIONS && process.env.STORE_DATA) {
+    try {
+      return JSON.parse(process.env.STORE_DATA);
+    } catch (error) {
+      console.warn('⚠️ STORE_DATA の解析に失敗しました:', error);
+    }
+  }
+  
+  // デフォルトの店舗データ（ローカル開発・デモ用）
+  return {
+    store_id: 'demo-store',
+    store_name: 'デモ店舗',
+    phone: '03-1234-5678',
+    liff_id: 'demo-liff-id',
+    menu: [
+      { id: 'cut', name: 'カット', time: 60, price: 5000 },
+      { id: 'color', name: 'カラー', time: 120, price: 8000 },
+      { id: 'perm', name: 'パーマ', time: 150, price: 12000 }
+    ],
+    business_hours: {
+      '月': '9:00-18:00',
+      '火': '9:00-18:00',
+      '水': '休み',
+      '木': '9:00-18:00',
+      '金': '9:00-18:00',
+      '土': '9:00-17:00',
+      '日': '10:00-16:00'
+    },
+    primary_color: '#ff6b6b'
+  };
 }
 
 build();
