@@ -52,9 +52,8 @@ exports.handler = async (event) => {
         
         try {
             if (record.business_hours && record.business_hours.value) {
-                // MULTI_LINE_TEXT フィールドからJSONパースして英語キーに変換
-                const originalHours = JSON.parse(record.business_hours.value);
-                businessHours = convertBusinessHoursToEnglish(originalHours);
+                // MULTI_LINE_TEXT フィールドからJSONパース（日本語のまま）
+                businessHours = JSON.parse(record.business_hours.value);
                 console.log('Parsed business_hours:', businessHours);
             } else {
                 console.log('business_hours field is empty or missing');
@@ -128,27 +127,6 @@ exports.handler = async (event) => {
         };
     }
 };
-
-// 営業時間の日本語キーを英語キーに変換
-function convertBusinessHoursToEnglish(originalHours) {
-    const dayMapping = {
-        '月': 'mon',
-        '火': 'tue', 
-        '水': 'wed',
-        '木': 'thu',
-        '金': 'fri',
-        '土': 'sat',
-        '日': 'sun'
-    };
-    
-    const convertedHours = {};
-    for (const [japaneseDay, time] of Object.entries(originalHours)) {
-        const englishDay = dayMapping[japaneseDay] || japaneseDay;
-        convertedHours[englishDay] = time;
-    }
-    
-    return convertedHours;
-}
 
 async function callGitHubAPI(payload) {
     return new Promise((resolve, reject) => {
