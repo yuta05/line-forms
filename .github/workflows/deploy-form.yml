@@ -2,7 +2,7 @@ name: Deploy LIFF Form
 
 on:
   repository_dispatch:
-    types: [deploy-form-*]  # ワイルドカードで全てのdeploy-form-*イベントを受信
+    types: [deploy-form]  # 正確なイベントタイプを指定
 
 env:
   STORE_ID: ${{ github.event.client_payload.store_id }}

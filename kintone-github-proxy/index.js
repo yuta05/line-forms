@@ -68,7 +68,7 @@ exports.handler = async (event) => {
         
         // GitHub API用のペイロード作成
         const githubPayload = {
-            event_type: `deploy-form`,
+            event_type: "deploy-form",
             client_payload: {
                 record_id: recordId,
                 store_id: record.store_id.value,
@@ -154,6 +154,8 @@ async function callGitHubAPI(payload) {
     return new Promise((resolve, reject) => {
         const data = JSON.stringify(payload);
         
+        console.log('Sending payload to GitHub:', data);
+        
         const options = {
             hostname: 'api.github.com',
             port: 443,
@@ -163,7 +165,7 @@ async function callGitHubAPI(payload) {
                 'Authorization': `token ${process.env.GITHUB_TOKEN}`,
                 'Accept': 'application/vnd.github.v3+json',
                 'Content-Type': 'application/json',
-                'Content-Length': data.length,
+                'Content-Length': Buffer.byteLength(data),
                 'User-Agent': 'kintone-github-proxy'
             }
         };
