@@ -1,0 +1,62 @@
+{
+  "resource": "/webhook",
+  "path": "/webhook",
+  "httpMethod": "POST",
+  "headers": {
+    "Accept-Encoding": "gzip,deflate",
+    "Content-Type": "application/json",
+    "Host": "zgljypjqwe.execute-api.ap-northeast-1.amazonaws.com",
+    "User-Agent": "kintone-Webhook/0.1",
+    "X-Amzn-Trace-Id": "Root=1-68b94664-279d4c5c5589cff56b2716b9",
+    "X-Forwarded-For": "52.32.46.167",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+    "Accept-Encoding": ["gzip,deflate"],
+    "Content-Type": ["application/json"],
+    "Host": ["zgljypjqwe.execute-api.ap-northeast-1.amazonaws.com"],
+    "User-Agent": ["kintone-Webhook/0.1"],
+    "X-Amzn-Trace-Id": ["Root=1-68b94664-279d4c5c5589cff56b2716b9"],
+    "X-Forwarded-For": ["52.32.46.167"],
+    "X-Forwarded-Port": ["443"],
+    "X-Forwarded-Proto": ["https"]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "msha50",
+    "resourcePath": "/webhook",
+    "httpMethod": "POST",
+    "extendedRequestId": "QXfvsGUWNjMEPOA=",
+    "requestTime": "04/Sep/2025:07:57:24 +0000",
+    "path": "/prod/webhook",
+    "accountId": "302263079179",
+    "protocol": "HTTP/1.1",
+    "stage": "prod",
+    "domainPrefix": "zgljypjqwe",
+    "requestTimeEpoch": 1756972644076,
+    "requestId": "a7209fd8-9ad7-479b-a1e0-07f3ab5ea5eb",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "52.32.46.167",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "kintone-Webhook/0.1",
+      "user": null
+    },
+    "domainName": "zgljypjqwe.execute-api.ap-northeast-1.amazonaws.com",
+    "deploymentId": "z3zjo5",
+    "apiId": "zgljypjqwe"
+  },
+  "body": "{\"id\":\"7b4e6e64-63aa-4873-a289-33c189097e8b\",\"type\":\"UPDATE_RECORD\",\"app\":{\"id\":\"406\",\"name\":\"LINEフォーム管理\"},\"record\":{\"store_id\":{\"type\":\"SINGLE_LINE_TEXT\",\"value\":\"store-01\"},\"business_hours\":{\"type\":\"MULTI_SELECT\",\"value\":[\"sample1\",\"sample2\",\"sample3\"]},\"error_message\":{\"type\":\"MULTI_LINE_TEXT\",\"value\":\"\"},\"liff_id\":{\"type\":\"SINGLE_LINE_TEXT\",\"value\":\"2008005606-0mqREGQ1\"},\"$revision\":{\"type\":\"__REVISION__\",\"value\":\"4\"},\"primary_color\":{\"type\":\"SINGLE_LINE_TEXT\",\"value\":\"#6600FF\"},\"Updated_by\":{\"type\":\"MODIFIER\",\"value\":{\"code\":\"yuta@kintone.com\",\"name\":\"Yuta Sugiura (kintone)\"}},\"Updated_datetime\":{\"type\":\"UPDATED_TIME\",\"value\":\"2025-09-04T07:57:00Z\"},\"Created_datetime\":{\"type\":\"CREATED_TIME\",\"value\":\"2025-09-04T07:30:00Z\"},\"form_url\":{\"type\":\"LINK\",\"value\":\"\"},\"phone\":{\"type\":\"LINK\",\"value\":\"1234567890\"},\"Record_number\":{\"type\":\"RECORD_NUMBER\",\"value\":\"1\"},\"menu_config\":{\"type\":\"MULTI_SELECT\",\"value\":[\"sample1\"]},\"store_name\":{\"type\":\"SINGLE_LINE_TEXT\",\"value\":\"Test3\"},\"Created_by\":{\"type\":\"CREATOR\",\"value\":{\"code\":\"yuta@kintone.com\",\"name\":\"Yuta Sugiura (kintone)\"}},\"email\":{\"type\":\"LINK\",\"value\":\"test@test.com\"},\"status\":{\"type\":\"DROP_DOWN\",\"value\":\"pending\"},\"$id\":{\"type\":\"__ID__\",\"value\":\"1\"}},\"recordTitle\":\"store-01\",\"url\":\"https://yuta05.kintone.com/k/406/show#record=1\"}",
+  "isBase64Encoded": false
+}
